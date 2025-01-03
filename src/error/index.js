@@ -1,4 +1,6 @@
 import { getConfig } from '../config'
+import lastCaptureEvent from '../util/captureEvent'
+import { getPaths } from '../util/paths'
 
 /**
  * 这个正则表达式用于匹配 JavaScript 错误栈中的堆栈跟踪信息中的单个条目，其中包含文件名、行号和列号等信息。
@@ -55,8 +57,16 @@ export default function error() {
 
   // 资源错误没有冒泡，所以只能在捕获阶段采集获取错误
   window.addEventListener('error', (event) => {
-    console.log('error', event)
+    // console.log('error', event)
     const target = event.target
+
+    // 获取执行的事件
+    const lastEvent = lastCaptureEvent()
+    // console.log('lastEvent', lastEvent)
+    // 获取事件的执行路径
+    const paths = getPaths(lastEvent)
+    // console.log('paths', paths)
+
     // 要判断是资源错误，还是js错误，很简单，直接判断事件对象有没有src或者href属性就可以了
     if (target && (target.src || target.href)) {
       console.log('资源错误')
@@ -73,7 +83,7 @@ export default function error() {
       console.log('js错误')
       // 上报js错误 todo...
       const errs = parseStackFrames(event.error)
-      console.log(errs)
+      // console.log(errs)
 
       const { filename, functionName, lineno, colno } = errs[0]
 
@@ -85,6 +95,7 @@ export default function error() {
         colno,
         message: event.message,
         stack: event.error.stack,
+        paths,
       }
       console.log(data)
     }
@@ -93,11 +104,17 @@ export default function error() {
   // promise错误
   window.addEventListener('unhandledrejection', (event) => {
     console.log('promise错误')
-    console.log(event)
+    // console.log(event)
+
+    // 获取执行的事件
+    const lastEvent = lastCaptureEvent()
+    // 获取事件的执行路径
+    const paths = getPaths(lastEvent)
+
     // 上报promise错误 todo...
     const reason = event.reason
     const errs = parseStackFrames(reason)
-    console.log(errs)
+    // console.log(errs)
 
     const { filename, functionName, lineno, colno } = errs[0]
 
@@ -109,6 +126,7 @@ export default function error() {
       colno,
       message: reason.message,
       stack: reason.stack,
+      paths,
     }
     console.log(data)
   })
@@ -118,9 +136,15 @@ export default function error() {
     const { Vue } = config.vue
     Vue.config.errorHandler = function (err, vm, info) {
       console.log('vue错误', err, vm, info)
+
+      // 获取执行的事件
+      const lastEvent = lastCaptureEvent()
+      // 获取事件的执行路径
+      const paths = getPaths(lastEvent)
+
       // 上报vue错误 todo...
       const errs = parseStackFrames(err)
-      console.log(errs)
+      // console.log(errs)
 
       const { filename, functionName, lineno, colno } = errs[0]
 
@@ -132,6 +156,7 @@ export default function error() {
         colno,
         message: err.message,
         stack: err.stack,
+        paths,
       }
       console.log(data)
     }
