@@ -61,6 +61,13 @@ export default function error() {
     if (target && (target.src || target.href)) {
       console.log('资源错误')
       // 上报资源错误 todo...
+      const data = {
+        errorType: 'resourceError',
+        filename: target.src || target.href,
+        tagName: target.tagName,
+        message: `加载${target.tagName}失败`,
+      }
+      console.log(data)
     }
     else {
       console.log('js错误')
