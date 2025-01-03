@@ -146,7 +146,7 @@ export default function error() {
       const errs = parseStackFrames(err)
       // console.log(errs)
 
-      const { filename, functionName, lineno, colno } = errs[1]
+      const { filename, functionName, lineno, colno } = errs[0]
 
       const data = {
         errorType: 'vueError',
