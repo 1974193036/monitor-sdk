@@ -3,7 +3,7 @@ const config = {
   appId: 'monitor-sdk-demo',
   userId: 'tony',
   // 上报地址
-  reportUrl: 'http://localhost:3001/report/actions2',
+  reportUrl: 'http://localhost:3001/report/actions',
   // 是否全埋点
   trackerAll: false,
   vue: {

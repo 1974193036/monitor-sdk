@@ -1,4 +1,5 @@
 import { getConfig } from '../config'
+import { lazyReportCache } from '../report'
 import lastCaptureEvent from '../util/captureEvent'
 import { getPaths } from '../util/paths'
 
@@ -78,6 +79,8 @@ export default function error() {
         message: `加载${target.tagName}失败`,
       }
       console.log(data)
+
+      lazyReportCache('error', data)
     }
     else {
       console.log('js错误')
@@ -98,6 +101,8 @@ export default function error() {
         paths,
       }
       console.log(data)
+
+      lazyReportCache('error', data)
     }
   }, true)
 
@@ -129,6 +134,8 @@ export default function error() {
       paths,
     }
     console.log(data)
+
+    lazyReportCache('error', data)
   })
 
   // vue错误
@@ -159,6 +166,8 @@ export default function error() {
         paths,
       }
       console.log(data)
+
+      lazyReportCache('error', data)
     }
   }
 }
