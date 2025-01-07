@@ -1,5 +1,5 @@
 import { getConfig } from '../config'
-import { addCache, getCache } from '../util/cache'
+import { addCache, clearCache, getCache } from '../util/cache'
 import getUniqueID from '../util/getUniqueID'
 
 /**
@@ -62,6 +62,7 @@ export function lazyReportCache(type, data, timeout = 3000) {
         // console.log(type, data) // error [xxx,xx,xx], api [xx,xx,xx]
         report(type, data)
       }
+      clearCache()
     }
   }, timeout)
 }
